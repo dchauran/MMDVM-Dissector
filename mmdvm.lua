@@ -463,11 +463,11 @@ function p_mmdvm.dissector (buf, pkt, root)
     elseif (tostring(buf(0,6)):fromhex()) == "MSTNAK" then
 
       subtree:add(f_signature, buf(0,6))
-      info("NAK in frame" .. _number)
+      -- info("NAK in frame" .. _number)
 
       if not pkt.visited then
 
-        info("univsited NAK in frame" .. _number)
+        -- info("univsited NAK in frame" .. _number)
 
         if not state_map[_number] then
           state_map[_number] = {}
@@ -520,15 +520,17 @@ function p_mmdvm.dissector (buf, pkt, root)
         else
           if buf:len() == 10 then
             subtree:add(f_rptr_id, buf(6,4))
-            pkt.cols.info:set("MSTNAK")
+            state_map[_number]['MSG'] = "MST->RPT: MSTNAK"
           else
-             pkt.cols.info:set("MSTNAK [MALFORMED]")
+            state_map[_number]['MALFORMED'] = true
+            state_map[_number]['MSG'] = "MST->RPT: MSTNAK [MALFORMED]"
           end
+          pkt.cols.info:set(state_map[_number]['MSG'])
         end
 
       else
 
-        info("visited NAK in frame" .. _number)
+        -- info("visited NAK in frame" .. _number)
         _message = state_map[_number]['MSG']
         pkt.cols.info:set(_message)
         if not state_map[_number]['MALFORMED'] then
