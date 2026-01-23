@@ -62,7 +62,7 @@ function string.fromhex(str)
 end
 
 function round(num, precision)
-   return math.floor(num*math.pow(10,precision)+0.5) / math.pow(10,precision)
+  return math.floor(num*10^precision+0.5) / 10^precision
 end
 
 -- removes leading zeros
@@ -463,11 +463,11 @@ function p_mmdvm.dissector (buf, pkt, root)
     elseif (tostring(buf(0,6)):fromhex()) == "MSTNAK" then
 
       subtree:add(f_signature, buf(0,6))
-      -- info("NAK in frame" .. _number)
+      print("NAK in frame" .. _number)
 
       if not pkt.visited then
 
-        -- info("univsited NAK in frame" .. _number)
+        print("univsited NAK in frame" .. _number)
 
         if not state_map[_number] then
           state_map[_number] = {}
@@ -530,7 +530,7 @@ function p_mmdvm.dissector (buf, pkt, root)
 
       else
 
-        -- info("visited NAK in frame" .. _number)
+        print("visited NAK in frame" .. _number)
         _message = state_map[_number]['MSG']
         pkt.cols.info:set(_message)
         if not state_map[_number]['MALFORMED'] then
